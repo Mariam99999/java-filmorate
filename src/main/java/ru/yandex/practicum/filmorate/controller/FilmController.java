@@ -22,8 +22,7 @@ public class FilmController {
     public boolean checkValidity(Film film) {
         boolean isValidDescription = film.getDescription().length() <= 200;
         LocalDate localDate = LocalDate.of(1895,
-                12
-                ,
+                12,
                 27);
         boolean isValidDate = film.getReleaseDate().isAfter(localDate);
         boolean isValidDuration = film.getDuration().isPositive();
