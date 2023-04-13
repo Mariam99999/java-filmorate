@@ -17,17 +17,12 @@ import java.util.Map;
 @Slf4j
 public class FilmController {
     private static int id = 0;
-    private final Map<Integer,
-            Film> films = new HashMap<>();
+    private final Map<Integer, Film> films = new HashMap<>();
 
     public boolean checkValidity(Film film) {
-        boolean isValidDescription = film.getDescription().length() <= 200;
-        LocalDate localDate = LocalDate.of(1895,
-                12,
-                27);
-        boolean isValidDate = film.getReleaseDate().isAfter(localDate);
-        boolean isValidDuration = film.getDuration().isPositive();
-        return isValidDescription && isValidDate && isValidDuration;
+        return film.getDescription().length() <= 200
+                && film.getReleaseDate().isAfter(LocalDate.of(1895, 12, 27))
+                && film.getDuration().isPositive();
     }
 
     @PostMapping
