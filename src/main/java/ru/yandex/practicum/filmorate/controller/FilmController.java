@@ -20,9 +20,7 @@ public class FilmController {
     private final Map<Integer, Film> films = new HashMap<>();
 
     public boolean checkValidity(Film film) {
-        return film.getDescription().length() <= 200 &&
-                film.getReleaseDate().isAfter(LocalDate.of(1895, 12, 27)) &&
-                film.getDuration().isPositive();
+        return film.getDescription().length() <= 200 && film.getReleaseDate().isAfter(LocalDate.of(1895, 12, 27)) && film.getDuration().isPositive();
     }
 
     @PostMapping
