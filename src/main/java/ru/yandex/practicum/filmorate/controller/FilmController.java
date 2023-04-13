@@ -17,7 +17,8 @@ import java.util.Map;
 @Slf4j
 public class FilmController {
     private static int id = 0;
-    private final Map<Integer, Film> films = new HashMap<>();
+    private final Map<Integer,
+            Film> films = new HashMap<>();
 
     public boolean checkValidity(Film film) {
         boolean isValidDescription = film.getDescription().length() <= 200;
