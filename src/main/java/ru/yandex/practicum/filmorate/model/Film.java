@@ -6,22 +6,23 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.Duration;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 public class Film {
     private int id;
-    @NotNull
     @NotBlank
     private final String name;
-    @NotNull
     @NotBlank
+    @Size(max = 200)
     private final String description;
     @NotNull
     private final LocalDate releaseDate;
     @NotNull
-    private final Duration duration;
+    @Positive
+    private final Double duration;
 
 }

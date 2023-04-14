@@ -18,36 +18,30 @@ import java.util.Map;
 public class FilmController {
     private static int id = 0;
     private final Map<Integer, Film> films = new HashMap<>();
-
-    public boolean checkValidity(Film film) {
-        return film.getDescription().length() <= 200
-                && film.getReleaseDate().isAfter(LocalDate.of(1895, 12, 27))
-                && film.getDuration().toMinutes() >= 0;
-    }
+    private static final LocalDate START_DATE = LocalDate.of(1895, 12, 27);
+    private static final String INVALID_DATE_FILM = "Film can't start before 1895.02.27";
+    private static final String WRONG_ID_MESSAGE = "Wrong id";
 
     @PostMapping
     public Film addFilm(@Valid @RequestBody Film film) {
-        if (checkValidity(film)) {
-            film.setId(++id);
-            films.put(film.getId(), film);
-            log.info("film added");
-            return film;
-        }
-        log.error("invalid data");
-        throw new ValidationException();
+        checkDate(film);
+        film.setId(++id);
+        films.put(film.getId(), film);
+        log.info("film added");
+        return film;
+
     }
 
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
-        if (checkValidity(film)) {
-            if (films.containsKey(film.getId())) {
-                films.put(film.getId(), film);
-                log.info("film updated");
-                return film;
-            }
+        checkDate(film);
+        if (films.containsKey(film.getId())) {
+            films.put(film.getId(), film);
+            log.info("film updated");
+            return film;
         }
-        log.error("invalid data");
-        throw new ValidationException();
+        log.error(WRONG_ID_MESSAGE);
+        throw new ValidationException(WRONG_ID_MESSAGE);
     }
 
     @GetMapping
@@ -55,5 +49,10 @@ public class FilmController {
         return new ArrayList<>(films.values());
     }
 
-
+    private void checkDate(Film film) {
+        if (film.getReleaseDate().isBefore(START_DATE)) {
+            log.error(INVALID_DATE_FILM);
+            throw new ValidationException(INVALID_DATE_FILM);
+        }
+    }
 }

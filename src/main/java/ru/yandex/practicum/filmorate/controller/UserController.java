@@ -6,7 +6,6 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,48 +16,51 @@ import java.util.Map;
 @Slf4j
 
 public class UserController {
-    Map<Integer, User> users = new HashMap<>();
+    private final Map<Integer, User> users = new HashMap<>();
     private static int id = 0;
+    private static final String WRONG_LOGIN_MESSAGE = "Login can't contain blank space";
+    private static final String WRONG_ID_MESSAGE = "Wrong id";
 
-    public boolean checkValidity(User user) {
-        return !user.getLogin().contains(" ")
-                && !user.getBirthday().isAfter(LocalDate.now());
-    }
 
     @PostMapping
     public User addUser(@Valid @RequestBody User user) {
-        if (checkValidity(user)) {
-            if (user.getName() == null || user.getName().isEmpty()) {
-                user.setName(user.getLogin());
-            }
-            user.setId(++id);
-            users.put(user.getId(), user);
-            log.info("user added");
-            return user;
-        }
-        log.error("invalid data");
-        throw new ValidationException();
+        checkValidLogin(user);
+        generateName(user);
+        user.setId(++id);
+        users.put(user.getId(), user);
+        log.info("user added");
+        return user;
     }
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
-        if (checkValidity(user)) {
-            if (user.getName() == null || user.getName().isEmpty()) {
-                user.setName(user.getLogin());
-            }
-            if (users.containsKey(user.getId())) {
-                users.put(user.getId(), user);
-                log.info("user added");
-                return user;
-            }
+        checkValidLogin(user);
+        if (users.containsKey(user.getId())) {
+            generateName(user);
+            users.put(user.getId(), user);
+            log.info("user added");
+            return user;
         }
-        log.error("invalid data");
-        throw new ValidationException();
+        log.error(WRONG_ID_MESSAGE);
+        throw new ValidationException(WRONG_ID_MESSAGE);
     }
 
     @GetMapping
     public List<User> getUsers() {
         return new ArrayList<>(users.values());
+    }
+
+    private void checkValidLogin(User user) {
+        if (user.getLogin().contains(" ")) {
+            log.error(WRONG_LOGIN_MESSAGE);
+            throw new ValidationException(WRONG_LOGIN_MESSAGE);
+        }
+    }
+
+    private void generateName(User user) {
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
     }
 
 }
