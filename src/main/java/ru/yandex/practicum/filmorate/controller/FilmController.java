@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +20,9 @@ public class FilmController {
     private final Map<Integer, Film> films = new HashMap<>();
 
     public boolean checkValidity(Film film) {
-        return film.getDescription().length() <= 200 && film.getDuration().isPositive();
+        return film.getDescription().length() <= 200
+                && film.getReleaseDate().isAfter(LocalDate.of(1895, 12, 27))
+                && film.getDuration().isPositive();
     }
 
     @PostMapping
