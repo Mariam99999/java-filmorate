@@ -20,8 +20,6 @@ public class FilmController {
 
     public boolean checkValidity(Film film) {
         return film.getDescription().length() <= 200 && film.getDuration().isPositive();
-//                && film.getReleaseDate().isAfter(LocalDate.of(1895, 12, 27))
-
     }
 
     @PostMapping
