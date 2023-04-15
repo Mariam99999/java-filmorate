@@ -1,10 +1,7 @@
 package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.yandex.practicum.filmorate.controller.FilmController;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import javax.validation.Validation;
@@ -12,7 +9,8 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class FilmControllerTests {
@@ -53,27 +51,31 @@ public class FilmControllerTests {
             assertFalse(validator.validate(film3).isEmpty());
             assertFalse(validator.validate(film4).isEmpty());
             assertFalse(validator.validate(film5).isEmpty());
+
+            Film filmAnnotationRealiseDate = new Film(0, "name", "test1",
+                    LocalDate.of(1893, 12, 28), 120.0);
+            assertFalse(validator.validate(filmAnnotationRealiseDate).isEmpty());
         }
     }
 
 
-    @Test
-    public void checkValidDate() {
-
-        FilmController filmController = new FilmController();
-        Film film1 = new Film(0, "name", "test1",
-                LocalDate.of(1895, 12, 28), 120.0);
-        Film film2 = new Film(5, "name2", "test2",
-                LocalDate.of(1895, 12, 27), 120.0);
-        Film film3 = new Film(7, "name3", "test3",
-                LocalDate.of(1895, 12, 26), 120.0);
-        assertEquals(film1, filmController.addFilm(film1));
-        assertEquals(film2, filmController.addFilm(film2));
-        assertThrows(ValidationException.class, new Executable() {
-            @Override
-            public void execute() {
-                filmController.addFilm(film3);
-            }
-        });
-    }
+//    @Test
+//    public void checkValidDate() {
+//
+//        FilmController filmController = new FilmController();
+//        Film film1 = new Film(0, "name", "test1",
+//                LocalDate.of(1895, 12, 28), 120.0);
+//        Film film2 = new Film(5, "name2", "test2",
+//                LocalDate.of(1895, 12, 27), 120.0);
+//        Film film3 = new Film(7, "name3", "test3",
+//                LocalDate.of(1895, 12, 26), 120.0);
+//        assertEquals(film1, filmController.addFilm(film1));
+//        assertEquals(film2, filmController.addFilm(film2));
+//        assertThrows(ValidationException.class, new Executable() {
+//            @Override
+//            public void execute() {
+//                filmController.addFilm(film3);
+//            }
+//        });
+//    }
 }

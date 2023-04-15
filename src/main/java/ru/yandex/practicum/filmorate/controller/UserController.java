@@ -16,11 +16,10 @@ import java.util.Map;
 @Slf4j
 
 public class UserController {
-    private final Map<Integer, User> users = new HashMap<>();
-    private static int id = 0;
     private static final String WRONG_LOGIN_MESSAGE = "Login can't contain blank space";
     private static final String WRONG_ID_MESSAGE = "Wrong id";
-
+    private static int id = 0;
+    private final Map<Integer, User> users = new HashMap<>();
 
     @PostMapping
     public User addUser(@Valid @RequestBody User user) {

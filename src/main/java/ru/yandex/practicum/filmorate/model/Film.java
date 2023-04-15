@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import ru.yandex.practicum.filmorate.annotation.RealiseDate;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -20,9 +21,9 @@ public class Film {
     @Size(max = 200)
     private final String description;
     @NotNull
+    @RealiseDate
     private final LocalDate releaseDate;
     @NotNull
     @Positive
     private final Double duration;
-
 }
