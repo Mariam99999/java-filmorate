@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -22,7 +23,7 @@ public class UserControllerTests {
     public void checkValidity() {
         try (ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory()) {
             Validator validator = validatorFactory.getValidator();
-            UserController userController = new UserController();
+            UserController userController = new UserController(new InMemoryUserStorage());
             User user1 = new User(1, "test@mail", "login1", "name",
                     LocalDate.of(2023, 4, 12));
             User user2 = new User(2, "mail", "login1", "name",
@@ -38,7 +39,7 @@ public class UserControllerTests {
 
     @Test
     public void checkValidLogin() {
-        UserController userController = new UserController();
+        UserController userController = new UserController(new InMemoryUserStorage());
         User user1 = new User(1, "test@mail", "login1", "name",
                 LocalDate.of(2023, 4, 12));
         User user2 = new User(2, "test2@mail", "lo gin2", "name",
@@ -54,7 +55,7 @@ public class UserControllerTests {
 
     @Test
     public void generateName() {
-        UserController userController = new UserController();
+        UserController userController = new UserController(new InMemoryUserStorage());
         User user1 = userController.addUser(new User(3, "test@mail", "login1", null,
                 LocalDate.of(2023, 4, 12)));
 

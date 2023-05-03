@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -26,4 +27,14 @@ public class Film {
     @NotNull
     @Positive
     private final Double duration;
+    private Set<Integer> likes;
+
+    public Set<Integer> addLike (Integer userId){
+        likes.add(userId);
+        return likes;
+    }
+    public Set<Integer> deleteLike(Integer userId){
+        likes.remove(userId);
+        return likes;
+    }
 }
