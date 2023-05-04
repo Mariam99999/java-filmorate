@@ -20,23 +20,29 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
-    public User addUser(User user){
+    public User addUser(User user) {
         return userStorage.addUser(user);
     }
-    public User updateUser(User user){
+
+    public User updateUser(User user) {
         return userStorage.updateUser(user);
     }
-    public User getUserById(int id){
-       return userStorage.getUserById(id);
+
+    public User getUserById(int id) {
+        return userStorage.getUserById(id);
     }
 
-    public List<User> getUsers(){
+    public List<User> getUsers() {
         return userStorage.getUsers();
     }
 
-    public void addFriend(int id, int friedId) {
-        userStorage.getUserById(id).addFriend(friedId);
-        userStorage.getUserById(friedId).addFriend(id);
+    public void addFriend(int id, int friendId) {
+//        if (userStorage.getUsers().contains(id) && userStorage.getUsers().contains(friendId)) {
+        User user1 = userStorage.getUserById(id);
+        User user2 = userStorage.getUserById(friendId);
+        user1.addFriend(friendId);
+        user2.addFriend(id);
+
     }
 
     public void deleteFriend(int id, int friedId) {
@@ -44,12 +50,14 @@ public class UserService {
         userStorage.getUserById(friedId).deleteFriend(id);
 
     }
-    public List<User> getFriends(int id ){
+
+    public List<User> getFriends(int id) {
         Set<Integer> friends = userStorage.getUserById(id).getFriends();
-        return friends.stream().map(userStorage::getUserById).collect(Collectors.toList());
+        return friends.stream()
+                .map(userStorage::getUserById)
+                .collect(Collectors.toList());
 
     }
-
 
 
     public List<User> getGeneralFriends(int id, int otherId) {
@@ -58,10 +66,12 @@ public class UserService {
         Set<Integer> friends1 = userStorage.getUserById(id).getFriends();
         Set<Integer> friends2 = userStorage.getUserById(otherId).getFriends();
 
+
         List<Integer> ids = friends1.stream().filter(friends2::contains).collect(Collectors.toList());
         return userStorage.getUsers().stream().filter(u -> ids.contains(u.getId())).collect(Collectors.toList());
     }
-    public User getUser (int id){
-       return userStorage.getUserById(id);
+
+    public User getUser(int id) {
+        return userStorage.getUserById(id);
     }
 }

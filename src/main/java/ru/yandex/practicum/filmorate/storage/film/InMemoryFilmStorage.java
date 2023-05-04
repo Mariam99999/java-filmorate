@@ -33,7 +33,7 @@ public class InMemoryFilmStorage implements FilmStorage {
             return film;
         }
         log.error(WRONG_ID_MESSAGE);
-        throw new ValidationException(WRONG_ID_MESSAGE);
+        throw new RuntimeException(WRONG_ID_MESSAGE);
     }
 
     @Override
@@ -43,6 +43,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film getFilmById(int id) {
-        return films.get(id);
+        if (films.containsKey(id)) return films.get(id);
+        throw new NullPointerException("Wrong id");
     }
 }

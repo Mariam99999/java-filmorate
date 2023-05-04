@@ -21,6 +21,7 @@ public class ErrorHandler {
     public ErrorResponse handelNullPointerException(final NullPointerException e) {
         return new ErrorResponse("Искомый объект не найден", e.getMessage());
     }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handelRuntimeException(final RuntimeException e) {

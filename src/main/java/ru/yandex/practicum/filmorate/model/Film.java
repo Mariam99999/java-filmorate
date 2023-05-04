@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -27,14 +28,18 @@ public class Film {
     @NotNull
     @Positive
     private final Double duration;
-    private Set<Integer> likes;
+    private final Set<Integer> likes = new HashSet<>();
 
-    public Set<Integer> addLike (Integer userId){
+    public Set<Integer> addLike(Integer userId) {
         likes.add(userId);
         return likes;
     }
-    public Set<Integer> deleteLike(Integer userId){
-        likes.remove(userId);
-        return likes;
+
+    public Set<Integer> deleteLike(Integer userId) {
+        if (likes.contains(userId)) {
+            likes.remove(userId);
+            return likes;
+        }
+        throw new NullPointerException("Wrong id");
     }
 }

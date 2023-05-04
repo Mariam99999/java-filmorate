@@ -26,27 +26,25 @@ public class FilmService {
         return filmStorage.getFilmById(id).addLike(userId);
     }
 
-    public Set<Integer> deleteLike(int id , int userId) {
+    public Set<Integer> deleteLike(int id, int userId) {
 
         return filmStorage.getFilmById(id).deleteLike(userId);
     }
 
     public List<Film> popularFilms(Integer count) {
         List<Film> films = filmStorage.getFilms();
-        if (count == null ) count = 10;
         return films.stream()
-                .sorted(Comparator.comparingInt(f -> f.getLikes().size()))
-                .skip(count)
+                .sorted((f1, f2) -> Integer.compare(f2.getLikes().size(), f1.getLikes().size()))
+                .limit(count)
                 .collect(Collectors.toList());
     }
-    public Film getFilm (Integer id){
-        return filmStorage.getFilmById(id);
-    }
+
     public Film addFilm(Film film) {
         return filmStorage.addFilm(film);
     }
+
     public Film update(Film film) {
-       return filmStorage.update(film);
+        return filmStorage.update(film);
     }
 
     public List<Film> getFilms() {
@@ -56,7 +54,6 @@ public class FilmService {
     public Film getFilmById(int id) {
         return filmStorage.getFilmById(id);
     }
-
 
 
 }
