@@ -64,6 +64,7 @@ public class UserService {
 
         Set<Integer> friends1 = userStorage.getUserById(id).getFriends();
         Set<Integer> friends2 = userStorage.getUserById(otherId).getFriends();
+        if(friends1 == null || friends2 == null) return List.of();
 
 
         List<Integer> ids = friends1.stream().filter(friends2::contains).collect(Collectors.toList());

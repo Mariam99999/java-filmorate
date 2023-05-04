@@ -29,6 +29,7 @@ public class User {
 
 
     public Set<Integer> addFriend(Integer friendId) {
+
         friends.add(friendId);
         return friends;
     }
