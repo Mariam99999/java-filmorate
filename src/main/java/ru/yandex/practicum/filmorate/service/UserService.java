@@ -36,7 +36,6 @@ public class UserService {
     }
 
     public void addFriend(int id, int friendId) {
-//        if (userStorage.getUsers().contains(id) && userStorage.getUsers().contains(friendId)) {
         User user1 = userStorage.getUserById(id);
         User user2 = userStorage.getUserById(friendId);
         user1.addFriend(friendId);
@@ -60,18 +59,11 @@ public class UserService {
 
 
     public List<User> getGeneralFriends(int id, int otherId) {
-
-
         Set<Integer> friends1 = userStorage.getUserById(id).getFriends();
         Set<Integer> friends2 = userStorage.getUserById(otherId).getFriends();
-        if(friends1 == null || friends2 == null) return List.of();
-
-
+        if (friends1 == null || friends2 == null) return List.of();
         List<Integer> ids = friends1.stream().filter(friends2::contains).collect(Collectors.toList());
         return userStorage.getUsers().stream().filter(u -> ids.contains(u.getId())).collect(Collectors.toList());
     }
 
-    public User getUser(int id) {
-        return userStorage.getUserById(id);
-    }
 }
