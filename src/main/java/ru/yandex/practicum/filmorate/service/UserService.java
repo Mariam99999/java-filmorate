@@ -14,10 +14,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final InMemoryUserStorage userStorage;
-
     private static final String WRONG_LOGIN_MESSAGE = "Login can't contain blank space";
-
+    private final InMemoryUserStorage userStorage;
 
     public User addUser(User user) {
         checkValidLogin(user);
@@ -69,12 +67,14 @@ public class UserService {
         List<Integer> ids = friends1.stream().filter(friends2::contains).collect(Collectors.toList());
         return userStorage.getUsers().stream().filter(u -> ids.contains(u.getId())).collect(Collectors.toList());
     }
+
     private void checkValidLogin(User user) {
         if (user.getLogin().contains(" ")) {
             throw new ValidationException(WRONG_LOGIN_MESSAGE);
         }
 
     }
+
     private void generateName(User user) {
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
