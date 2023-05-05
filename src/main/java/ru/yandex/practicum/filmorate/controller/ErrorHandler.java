@@ -19,6 +19,7 @@ public class ErrorHandler {
         log.error("Получен статус 400 Bad Request {}", e.getMessage(), e);
         return new ErrorResponse("Ошибка валидации: ", e.getMessage());
     }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handelMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
