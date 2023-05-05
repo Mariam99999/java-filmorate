@@ -32,7 +32,6 @@ public class InMemoryFilmStorage implements FilmStorage {
             log.info("film updated");
             return film;
         }
-        log.error(WRONG_ID_MESSAGE);
         throw new RuntimeException(WRONG_ID_MESSAGE);
     }
 

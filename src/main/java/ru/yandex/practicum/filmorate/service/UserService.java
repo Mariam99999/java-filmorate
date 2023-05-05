@@ -1,7 +1,8 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
@@ -10,20 +11,23 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final InMemoryUserStorage userStorage;
 
-    @Autowired
-    public UserService(InMemoryUserStorage userStorage) {
-        this.userStorage = userStorage;
-    }
+    private static final String WRONG_LOGIN_MESSAGE = "Login can't contain blank space";
+
 
     public User addUser(User user) {
+        checkValidLogin(user);
+        generateName(user);
         return userStorage.addUser(user);
     }
 
     public User updateUser(User user) {
+        checkValidLogin(user);
+        generateName(user);
         return userStorage.updateUser(user);
     }
 
@@ -64,6 +68,17 @@ public class UserService {
         if (friends1 == null || friends2 == null) return List.of();
         List<Integer> ids = friends1.stream().filter(friends2::contains).collect(Collectors.toList());
         return userStorage.getUsers().stream().filter(u -> ids.contains(u.getId())).collect(Collectors.toList());
+    }
+    private void checkValidLogin(User user) {
+        if (user.getLogin().contains(" ")) {
+            throw new ValidationException(WRONG_LOGIN_MESSAGE);
+        }
+
+    }
+    private void generateName(User user) {
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
     }
 
 }
