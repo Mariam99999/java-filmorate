@@ -17,6 +17,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 public class Film {
+    private int id;
     @NotBlank
     private final String name;
     @NotBlank
@@ -30,7 +31,6 @@ public class Film {
     private final Double duration;
     @JsonIgnore
     private final Set<Integer> likes = new HashSet<>();
-    private int id;
 
     public Set<Integer> addLike(Integer userId) {
         likes.add(userId);
