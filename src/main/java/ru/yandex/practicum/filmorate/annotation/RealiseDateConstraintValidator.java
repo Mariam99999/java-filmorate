@@ -14,6 +14,7 @@ public class RealiseDateConstraintValidator implements ConstraintValidator<Reali
 
     @Override
     public boolean isValid(LocalDate localDate, ConstraintValidatorContext constraintValidatorContext) {
-        return localDate == null || !localDate.isBefore(START_DATE);
+        if (localDate == null) return false;
+        return !localDate.isBefore(START_DATE);
     }
 }

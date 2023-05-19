@@ -14,5 +14,4 @@ public @interface RealiseDate {
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
-
 }
