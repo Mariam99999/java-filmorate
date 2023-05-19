@@ -5,6 +5,6 @@ public enum Genre {
     DRAMA,
     MULTIPLICATION,
     THRILLER,
-    Documentary,
+    DOCUMENTARY,
     ACTION
 }

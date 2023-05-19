@@ -13,7 +13,6 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -34,7 +33,7 @@ public class Film {
     @JsonIgnore
     private final Set<Integer> likes = new HashSet<>();
     @NonNull
-    private List<Genre> genres;
+    private Set<Genre> genres;
     @NonNull
     private AgeRating ageRating;
 
