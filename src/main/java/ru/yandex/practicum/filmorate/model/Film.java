@@ -38,8 +38,7 @@ public class Film {
     }
 
     public Set<Integer> deleteLike(Integer userId) {
-        if (likes.contains(userId)) {
-            likes.remove(userId);
+        if (likes.remove(userId)) {
             return likes;
         }
         throw new NullPointerException("Wrong id");

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.List;
 import java.util.Set;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private static final String WRONG_LOGIN_MESSAGE = "Login can't contain blank space";
-    private final InMemoryUserStorage userStorage;
+    private final UserStorage userStorage;
 
     public User addUser(User user) {
         checkValidLogin(user);
