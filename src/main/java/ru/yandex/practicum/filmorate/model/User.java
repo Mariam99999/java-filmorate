@@ -28,6 +28,8 @@ public class User {
     private final LocalDate birthday;
     @JsonIgnore
     private final Set<Integer> friends = new HashSet<>();
+    @JsonIgnore
+    private final boolean isUnconfirmedFriends = false;
 
     public Set<Integer> addFriend(Integer friendId) {
 
@@ -39,5 +41,6 @@ public class User {
         friends.remove(friendId);
         return friends;
     }
+
 
 }
