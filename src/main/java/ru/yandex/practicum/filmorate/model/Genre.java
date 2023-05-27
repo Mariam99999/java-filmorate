@@ -6,5 +6,6 @@ public enum Genre {
     MULTIPLICATION,
     THRILLER,
     DOCUMENTARY,
-    ACTION
+    ACTION,
+    UNKNOWN
 }

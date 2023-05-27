@@ -5,5 +5,7 @@ public enum AgeRating {
     PG,
     PG_13,
     R,
-    NC_17
+    NC_17,
+    UNKNOWN
+
 }

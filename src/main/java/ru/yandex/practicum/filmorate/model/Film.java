@@ -4,7 +4,6 @@ package ru.yandex.practicum.filmorate.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NonNull;
 import ru.yandex.practicum.filmorate.annotation.RealiseDate;
 
 import javax.validation.constraints.NotBlank;
@@ -32,9 +31,9 @@ public class Film {
     private final Double duration;
     @JsonIgnore
     private final Set<Integer> likes = new HashSet<>();
-    @NonNull
+
     private Set<Genre> genres;
-    @NonNull
+
     private AgeRating ageRating;
 
     public Set<Integer> addLike(Integer userId) {
