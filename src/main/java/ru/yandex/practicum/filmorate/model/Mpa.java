@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @AllArgsConstructor
-public class Genre {
+public class Mpa {
     @NotNull
     private final int id;
     @NotBlank

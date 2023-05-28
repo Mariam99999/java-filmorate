@@ -2,15 +2,13 @@ package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.yandex.practicum.filmorate.model.AgeRating;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.time.LocalDate;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -23,9 +21,9 @@ public class FilmControllerTests {
         try (ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory()) {
             Validator validator = validatorFactory.getValidator();
             Film film1 = new Film(1, "name", "test1",
-                    LocalDate.of(1895, 12, 28), 120.0, Set.of(Genre.ACTION), AgeRating.G);
+                    LocalDate.of(1895, 12, 28), 120.0, new Mpa(1,"G"));
             Film film2 = new Film(2, "", "test1",
-                    LocalDate.of(1895, 12, 28), 120.0, Set.of(Genre.ACTION), AgeRating.G);
+                    LocalDate.of(1895, 12, 28), 120.0,  new Mpa(1,"G"));
             String someLongText = "Behind me, field and meadow sleeping,\n" +
                     "I leave in deep, prophetic night,\n" +
                     "Within whose dread and holy keeping\n" +
@@ -44,11 +42,11 @@ public class FilmControllerTests {
                     "A welcome, but also a silent, guest.";
 
             Film film3 = new Film(3, "name3", someLongText,
-                    LocalDate.of(1895, 12, 28), 120.0, Set.of(Genre.ACTION), AgeRating.G);
+                    LocalDate.of(1895, 12, 28), 120.0,new Mpa(1,"G"));
             Film film4 = new Film(4, "name3", "description",
-                    null, 120.0,Set.of(Genre.ACTION), AgeRating.G);
+                    null, 120.0, new Mpa(1,"G"));
             Film film5 = new Film(5, "name3", someLongText,
-                    LocalDate.of(1895, 12, 28), -120.0,Set.of(Genre.ACTION), AgeRating.G);
+                    LocalDate.of(1895, 12, 28), -120.0, new Mpa(1,"G"));
             assertTrue(validator.validate(film1).isEmpty());
             assertFalse(validator.validate(film2).isEmpty());
             assertFalse(validator.validate(film3).isEmpty());
@@ -56,7 +54,7 @@ public class FilmControllerTests {
             assertFalse(validator.validate(film5).isEmpty());
 
             Film filmAnnotationRealiseDate = new Film(0, "name", "test1",
-                    LocalDate.of(1893, 12, 28), 120.0,Set.of(Genre.ACTION), AgeRating.G);
+                    LocalDate.of(1893, 12, 28), 120.0,new Mpa(1,"G"));
             assertFalse(validator.validate(filmAnnotationRealiseDate).isEmpty());
         }
     }

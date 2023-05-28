@@ -37,8 +37,7 @@ create table IF NOT EXISTS FRIEND_STATUS
         primary key (STATUS_ID)
 );
 
-create unique index IF NOT EXISTS STATUS_STATUS_TITLE_UINDEX
-    on FRIEND_STATUS (STATUS_TITLE);
+
 
 create table IF NOT EXISTS GENRE
 (
@@ -97,11 +96,7 @@ create table IF NOT EXISTS FILM_LIKES
         foreign key (USER_ID) references USERS
 );
 
-create unique index IF NOT EXISTS USERS_EMAIL_UINDEX
-    on USERS (EMAIL);
 
-create unique index IF NOT EXISTS USERS_LOGIN_UINDEX
-    on USERS (LOGIN);
 
 create table IF NOT EXISTS USER_FRIENDS
 (

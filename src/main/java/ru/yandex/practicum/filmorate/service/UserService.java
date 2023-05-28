@@ -38,17 +38,18 @@ public class UserService {
     }
 
     public void addFriend(int id, int friendId) {
-        User user1 = userStorage.getUserById(id);
-        User user2 = userStorage.getUserById(friendId);
-        user1.addFriend(friendId);
-        user2.addFriend(id);
+        User user = userStorage.getUserById(id);
+        User friend = userStorage.getUserById(friendId);
+        user.addFriend(friendId);
+        userStorage.updateUser(user);
 
     }
 
     public void deleteFriend(int id, int friedId) {
-        userStorage.getUserById(id).deleteFriend(friedId);
-        userStorage.getUserById(friedId).deleteFriend(id);
-
+        User user = userStorage.getUserById(id);
+        if (!user.getFriends().contains(friedId)) throw new NullPointerException("FRIEND DOES NOT EXIST");
+        user.deleteFriend(friedId);
+        userStorage.updateUser(user);
     }
 
     public List<User> getFriends(int id) {
