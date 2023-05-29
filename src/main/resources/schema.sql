@@ -72,7 +72,6 @@ create table IF NOT EXISTS FILM_GENRE
 
 
 
-
 create table IF NOT EXISTS USERS
 (
     ID       INTEGER auto_increment,

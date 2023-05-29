@@ -7,10 +7,12 @@ import ru.yandex.practicum.filmorate.exception.EntityNotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.util.List;
+
 @Component
 @RequiredArgsConstructor
-public class GenreDbStorage implements GenreStorage{
+public class GenreDbStorage implements GenreStorage {
     private final JdbcTemplate jdbcTemplate;
+
     @Override
     public List<Genre> getGenres() {
         String genreQuery = "SELECT * FROM PUBLIC.GENRE";
