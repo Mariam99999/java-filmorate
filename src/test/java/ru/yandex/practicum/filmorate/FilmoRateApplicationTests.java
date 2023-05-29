@@ -124,6 +124,5 @@ public class FilmoRateApplicationTests {
     @Test
     public void testGetAgeRatingById() {
         assertEquals(ratingStorage.getAgeRatingById(1).getId(), 1);
-
     }
 }
