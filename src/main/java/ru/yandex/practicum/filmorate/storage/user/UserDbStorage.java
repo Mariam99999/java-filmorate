@@ -1,12 +1,12 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.EntityNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.sql.Date;
@@ -17,7 +17,6 @@ import java.util.*;
 
 @Component
 @RequiredArgsConstructor
-@Primary
 public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
     private static final String WRONG_ID_MESSAGE = "Wrong id";
@@ -37,7 +36,6 @@ public class UserDbStorage implements UserStorage {
             stmt.setDate(4, Date.valueOf(user.getBirthday()));
             return stmt;
         }, keyHolder);
-//       jdbcTemplate.update(query, user.getName(), user.getLogin(), user.getEmail(), user.getBirthday());
         user.setId(keyHolder.getKey().intValue());
         return user;
     }
@@ -48,8 +46,7 @@ public class UserDbStorage implements UserStorage {
                 " SET NAME = ?, LOGIN = ?, EMAIL = ?, BIRTHDAY= ?  WHERE ID = ?;";
         int i = jdbcTemplate.update(query, user.getName(), user.getLogin(),
                 user.getEmail(), user.getBirthday(), user.getId());
-        if (i == 0) throw new NullPointerException(WRONG_ID_MESSAGE);
-        updateUserFriends(user);
+        if (i == 0) throw new EntityNotFoundException(WRONG_ID_MESSAGE);
         return user;
 
     }
@@ -57,26 +54,18 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> getUsers() {
-        String friendsQuery = "SELECT * FROM PUBLIC.USER_FRIENDS";
-        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(friendsQuery);
-        Map<Integer, Set<Integer>> friendsMap = makeFriendsMap(sqlRowSet);
-
         String query = " SELECT *  FROM PUBLIC.USERS";
-        return jdbcTemplate.query(query, (rs, row) -> makeUser(rs, friendsMap));
+        return jdbcTemplate.query(query, (rs, row) -> makeUser(rs));
     }
 
     @Override
     public User getUserById(int id) {
-        String friendsQuery = "SELECT * FROM PUBLIC.USER_FRIENDS WHERE USER_ID = ?";
-        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(friendsQuery, id);
-        Map<Integer, Set<Integer>> friendsMap = makeFriendsMap(sqlRowSet);
-
-
         String userQuery = " SELECT *  FROM PUBLIC.USERS WHERE ID = ?";
-        List<User> users = jdbcTemplate.query(userQuery, (rs, row) -> makeUser(rs, friendsMap), id);
-        if (users.isEmpty()) throw new NullPointerException(WRONG_ID_MESSAGE);
+        List<User> users = jdbcTemplate.query(userQuery, (rs, row) -> makeUser(rs), id);
+        if (users.isEmpty()) throw new EntityNotFoundException(WRONG_ID_MESSAGE);
         return users.get(0);
     }
+
 
     private Map<Integer, Set<Integer>> makeFriendsMap(SqlRowSet sqlRowSet) {
         Map<Integer, Set<Integer>> friendsMap = new HashMap<>();
@@ -94,28 +83,12 @@ public class UserDbStorage implements UserStorage {
         return friendsMap;
     }
 
-    private User makeUser(ResultSet rs, Map<Integer, Set<Integer>> friendsMap) throws SQLException {
+    private User makeUser(ResultSet rs) throws SQLException {
         int id = rs.getInt("ID");
-        Set<Integer> friends = friendsMap.get(id);
-        User user = new User(id, rs.getString("EMAIL"), rs.getString("LOGIN"), rs.getString("NAME"),
+
+        return new User(id, rs.getString("EMAIL"), rs.getString("LOGIN"), rs.getString("NAME"),
                 rs.getDate("BIRTHDAY").toLocalDate());
-        if (friends != null) {
-            for (int friendId : friends) {
-                user.addFriend(friendId);
-            }
-        }
-        return user;
 
     }
 
-    private void updateUserFriends(User user) {
-        String queryDeleteOldFriends = "DELETE from PUBLIC.USER_FRIENDS where USER_ID = ?";
-        jdbcTemplate.update(queryDeleteOldFriends, user.getId());
-
-        String queryAddNewFriends = "INSERT INTO PUBLIC.USER_FRIENDS  (USER_ID, FRIEND_ID, STATUS_ID)" +
-                "VALUES (?, ?, 1);";
-        for (int friendId : user.getFriends()) {
-            jdbcTemplate.update(queryAddNewFriends, user.getId(), friendId);
-        }
-    }
 }

@@ -6,6 +6,9 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.like.LikeStorage;
+import ru.yandex.practicum.filmorate.storage.rating.RatingStorage;
 
 import java.util.List;
 import java.util.Set;
@@ -15,24 +18,25 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FilmService {
     private final FilmStorage filmStorage;
+    private final GenreStorage genreStorage;
+    private final RatingStorage ratingStorage;
+    private final LikeStorage likeStorage;
 
 
-    public Set<Integer> addLike(int id, int userId) {
-        Film film = filmStorage.getFilmById(id);
-        film.addLike(userId);
-        filmStorage.update(film);
-        return film.getLikes();
+    public Set<Integer> addLike(int filmId, int userId) {
+        return likeStorage.addLike(filmId, userId);
     }
 
-    public Set<Integer> deleteLike(int id, int userId) {
+    public Set<Integer> deleteLike(int filmId, int userId) {
 
-        return filmStorage.getFilmById(id).deleteLike(userId);
+        return likeStorage.deleteLike(filmId, userId);
     }
 
     public List<Film> popularFilms(Integer count) {
         List<Film> films = filmStorage.getFilms();
         return films.stream()
-                .sorted((f1, f2) -> Integer.compare(f2.getLikes().size(), f1.getLikes().size()))
+                .sorted((f1, f2) -> Integer.compare(likeStorage.getFilmLikes(f2.getId()).size(),
+                        likeStorage.getFilmLikes(f1.getId()).size()))
                 .limit(count)
                 .collect(Collectors.toList());
     }
@@ -54,20 +58,19 @@ public class FilmService {
     }
 
     public List<Genre> getGenres() {
-        return filmStorage.getGenres();
+        return genreStorage.getGenres();
     }
 
     public Genre getGenreById(int id) {
-        return filmStorage.getGenreById(id);
+        return genreStorage.getGenreById(id);
     }
 
     public List<Mpa> getAgeRatings() {
-        return filmStorage.getAgeRatings();
+        return ratingStorage.getAgeRatings();
     }
 
     public Mpa getAgeRatingById(int id) {
-        return filmStorage.getAgeRatingById(id);
+        return ratingStorage.getAgeRatingById(id);
     }
-
 
 }

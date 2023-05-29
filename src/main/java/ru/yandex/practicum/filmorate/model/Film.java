@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -29,24 +28,14 @@ public class Film {
     @NotNull
     @Positive
     private final Double duration;
-    private final Set<Integer> likes = new HashSet<>();
     private final LinkedHashSet<Genre> genres = new LinkedHashSet<>();
+    @NotNull
     private Mpa mpa;
 
-    public Set<Integer> addLike(Integer userId) {
-        likes.add(userId);
-        return likes;
-    }
 
     public Set<Genre> addGenre(Genre genre) {
         genres.add(genre);
         return genres;
     }
 
-    public Set<Integer> deleteLike(Integer userId) {
-        if (likes.remove(userId)) {
-            return likes;
-        }
-        throw new NullPointerException("Wrong id");
-    }
 }

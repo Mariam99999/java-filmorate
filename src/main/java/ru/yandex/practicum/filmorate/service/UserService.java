@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.friend.FriendStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class UserService {
 
     private static final String WRONG_LOGIN_MESSAGE = "Login can't contain blank space";
     private final UserStorage userStorage;
+    private final FriendStorage friendStorage;
 
     public User addUser(User user) {
         checkValidLogin(user);
@@ -37,33 +39,26 @@ public class UserService {
         return userStorage.getUsers();
     }
 
-    public void addFriend(int id, int friendId) {
-        User user = userStorage.getUserById(id);
-        User friend = userStorage.getUserById(friendId);
-        user.addFriend(friendId);
-        userStorage.updateUser(user);
+    public Set<Integer> addFriend(int userId, int friendId) {
+        return friendStorage.addFriend(userId, friendId);
 
     }
 
-    public void deleteFriend(int id, int friedId) {
-        User user = userStorage.getUserById(id);
-        if (!user.getFriends().contains(friedId)) throw new NullPointerException("FRIEND DOES NOT EXIST");
-        user.deleteFriend(friedId);
-        userStorage.updateUser(user);
+    public void deleteFriend(int userId, int friedId) {
+        friendStorage.deleteFriend(userId, friedId);
     }
 
-    public List<User> getFriends(int id) {
-        Set<Integer> friends = userStorage.getUserById(id).getFriends();
+    public List<User> getFriends(int userId) {
+        Set<Integer> friends = friendStorage.getFriends(userId);
         return friends.stream()
                 .map(userStorage::getUserById)
                 .collect(Collectors.toList());
-
     }
 
 
     public List<User> getGeneralFriends(int id, int otherId) {
-        Set<Integer> friends1 = userStorage.getUserById(id).getFriends();
-        Set<Integer> friends2 = userStorage.getUserById(otherId).getFriends();
+        Set<Integer> friends1 = friendStorage.getFriends(id);
+        Set<Integer> friends2 = friendStorage.getFriends(otherId);
         if (friends1 == null || friends2 == null) return List.of();
         List<Integer> ids = friends1.stream().filter(friends2::contains).collect(Collectors.toList());
         return userStorage.getUsers().stream().filter(u -> ids.contains(u.getId())).collect(Collectors.toList());

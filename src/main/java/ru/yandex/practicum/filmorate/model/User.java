@@ -26,19 +26,5 @@ public class User {
     @PastOrPresent
     private final LocalDate birthday;
 
-    private final Set<Integer> friends = new HashSet<>();
-
-
-    public Set<Integer> addFriend(Integer friendId) {
-
-        friends.add(friendId);
-        return friends;
-    }
-
-    public Set<Integer> deleteFriend(Integer friendId) {
-        friends.remove(friendId);
-        return friends;
-    }
-
 
 }

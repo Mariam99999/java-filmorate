@@ -11,7 +11,9 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
+import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.rating.RatingStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,8 +29,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class FilmoRateApplicationTests {
-    private final UserDbStorage userStorage;
+    private final UserStorage userStorage;
     private final FilmStorage filmStorage;
+    private final GenreStorage genreStorage;
+    private final RatingStorage ratingStorage;
     private final User user = new User(1, "email", "l", "n", LocalDate.of(2000, 1, 1));
     Film film = new Film(1, "f1", "d1",
             LocalDate.of(1895, 12, 28), 120.0, new Mpa(1, "G"));
@@ -64,13 +68,10 @@ public class FilmoRateApplicationTests {
     @Test
     public void testUpdateUser() {
         userStorage.addUser(user);
-        userStorage.addUser(user);
         User user = userStorage.getUserById(1);
         user.setName("newName");
-        user.addFriend(2);
         userStorage.updateUser(user);
         assertEquals(userStorage.getUserById(1).getName(), user.getName());
-        assertTrue(userStorage.getUserById(1).getFriends().contains(2));
     }
 
     @Test
@@ -107,22 +108,22 @@ public class FilmoRateApplicationTests {
 
     @Test
     public void testGetAllGenres() {
-        assertTrue(filmStorage.getGenres().size() > 0);
+        assertTrue(genreStorage.getGenres().size() > 0);
     }
 
     @Test
     public void testGetGenreById() {
-        assertEquals(1, filmStorage.getGenreById(1).getId());
+        assertEquals(1, genreStorage.getGenreById(1).getId());
     }
 
     @Test
     public void testGetAllAgeRating() {
-        assertTrue(filmStorage.getAgeRatings().size() > 0);
+        assertTrue(ratingStorage.getAgeRatings().size() > 0);
     }
 
     @Test
     public void testGetAgeRatingById() {
-        assertEquals(filmStorage.getAgeRatingById(1).getId(), 1);
+        assertEquals(ratingStorage.getAgeRatingById(1).getId(), 1);
 
     }
 }
