@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
@@ -93,11 +92,11 @@ public class FilmoRateApplicationTests {
     @Test
     public void testUpdateFilm() {
         filmStorage.addFilm(film);
-        Film oldFilm = filmStorage.getFilms().get(0);
-        oldFilm.addGenre(new Genre(1, "Комедия"));
-        filmStorage.update(oldFilm);
+        Film film2 = new Film(1, "f2", "d1",
+                LocalDate.of(1895, 12, 28), 120.0, new Mpa(1, "G"));
+        filmStorage.update(film2);
 
-        assertEquals(oldFilm, filmStorage.getFilmById(1));
+        assertEquals("f2", filmStorage.getFilmById(1).getName());
     }
 
     @Test

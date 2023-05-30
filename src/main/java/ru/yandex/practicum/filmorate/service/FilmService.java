@@ -37,23 +37,33 @@ public class FilmService {
     }
 
     public List<Film> popularFilms(Integer count) {
-        return filmStorage.getPopularFilms(count);
+        List<Film> films = filmStorage.getPopularFilms(count);
+        genreStorage.addGenresToFilms(films);
+        return films;
     }
 
     public Film addFilm(Film film) {
-        return filmStorage.addFilm(film);
+        filmStorage.addFilm(film);
+        genreStorage.insertGenres(film);
+        return film;
     }
 
     public Film update(Film film) {
-        return filmStorage.update(film);
+        filmStorage.update(film);
+        genreStorage.updateGenres(film);
+        return film;
     }
 
     public List<Film> getFilms() {
-        return filmStorage.getFilms();
+        List<Film> films = filmStorage.getFilms();
+        genreStorage.addGenresToFilms(films);
+        return films;
     }
 
     public Film getFilmById(int id) {
-        return filmStorage.getFilmById(id);
+        List<Film> films = List.of(filmStorage.getFilmById(id));
+        genreStorage.addGenresToFilms(films);
+        return films.get(0);
     }
 
     public List<Genre> getGenres() {
