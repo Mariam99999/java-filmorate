@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.EntityNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -13,7 +12,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -64,23 +63,6 @@ public class UserDbStorage implements UserStorage {
         List<User> users = jdbcTemplate.query(userQuery, (rs, row) -> makeUser(rs), id);
         if (users.isEmpty()) throw new EntityNotFoundException(WRONG_ID_MESSAGE);
         return users.get(0);
-    }
-
-
-    private Map<Integer, Set<Integer>> makeFriendsMap(SqlRowSet sqlRowSet) {
-        Map<Integer, Set<Integer>> friendsMap = new HashMap<>();
-        while (sqlRowSet.next()) {
-            int userId = sqlRowSet.getInt("USER_ID");
-            Set<Integer> friendSet;
-            if (friendsMap.containsKey(userId)) {
-                friendSet = friendsMap.get(userId);
-            } else {
-                friendSet = new HashSet<>();
-            }
-            friendSet.add(sqlRowSet.getInt("FRIEND_ID"));
-            friendsMap.put(userId, friendSet);
-        }
-        return friendsMap;
     }
 
     private User makeUser(ResultSet rs) throws SQLException {

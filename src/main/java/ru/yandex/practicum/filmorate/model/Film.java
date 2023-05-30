@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.annotation.RealiseDate;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -30,6 +31,7 @@ public class Film {
     private final Double duration;
     private final LinkedHashSet<Genre> genres = new LinkedHashSet<>();
     @NotNull
+    @Valid
     private Mpa mpa;
 
 

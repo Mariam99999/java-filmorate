@@ -62,13 +62,15 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getFilms() {
-        String genreQuery = "SELECT fg.FILM_ID, g.GENRE_ID, g.TITLE FROM PUBLIC.FILM_GENRE AS fg" + " LEFT JOIN GENRE as g on fg.GENRE_ID = g.GENRE_ID";
+        String genreQuery = "SELECT fg.FILM_ID, g.GENRE_ID, g.TITLE FROM PUBLIC.FILM_GENRE AS fg" +
+                " LEFT JOIN GENRE as g on fg.GENRE_ID = g.GENRE_ID";
         SqlRowSet genreSet = jdbcTemplate.queryForRowSet(genreQuery);
 
         Map<Integer, Set<Genre>> genresMap = makeGenresMap(genreSet);
 
         String query = " SELECT f.ID, f.NAME, f.DESCRIPTION, f.RELEASE_DATE" + ",f.DURATION, r.RATING_ID, r.TITLE  " +
                 "FROM PUBLIC.FILMS as f" + " left join PUBLIC.RATING as r on f.RATING_ID = r.RATING_ID";
+
         return jdbcTemplate.query(query, (rs, row) -> makeFilm(rs, genresMap));
     }
 
@@ -87,6 +89,23 @@ public class FilmDbStorage implements FilmStorage {
 
         if (films.isEmpty()) throw new EntityNotFoundException("FILM DOES NOT EXIST");
         return films.get(0);
+    }
+
+    @Override
+    public List<Film> getPopularFilms(int size) {
+        String genreQuery = "SELECT fg.FILM_ID, g.GENRE_ID, g.TITLE FROM PUBLIC.FILM_GENRE AS fg" + " LEFT JOIN GENRE as g on fg.GENRE_ID = g.GENRE_ID";
+        SqlRowSet genreSet = jdbcTemplate.queryForRowSet(genreQuery);
+
+        Map<Integer, Set<Genre>> genresMap = makeGenresMap(genreSet);
+        String query = " SELECT f.ID, f.NAME, f.DESCRIPTION, f.RELEASE_DATE,f.DURATION, r.RATING_ID, r.TITLE\n" +
+                "                 FROM PUBLIC.FILMS as f\n" +
+                "                     left join PUBLIC.RATING as r on f.RATING_ID = r.RATING_ID\n" +
+                "                left join FILM_LIKES as fl on f.ID = fl.FILM_ID\n" +
+                "                group by f.ID\n" +
+                "                order by count(fl.USER_ID) desc\n" +
+                "                limit ?;";
+        return jdbcTemplate.query(query, (rs, row) -> makeFilm(rs, genresMap), size);
+
     }
 
 
@@ -110,12 +129,7 @@ public class FilmDbStorage implements FilmStorage {
         while (sqlRowSet.next()) {
             Genre genre = new Genre(sqlRowSet.getInt("GENRE_ID"), sqlRowSet.getString("TITLE"));
             int id = sqlRowSet.getInt("FILM_ID");
-            Set<Genre> genreSet;
-            if (genresMap.containsKey(id)) {
-                genreSet = genresMap.get(id);
-            } else {
-                genreSet = new HashSet<>();
-            }
+            Set<Genre> genreSet = genresMap.computeIfAbsent(id, k -> new HashSet<>());
             genreSet.add(genre);
             genresMap.put(id, genreSet);
         }

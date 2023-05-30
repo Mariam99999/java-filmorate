@@ -9,10 +9,10 @@ import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.like.LikeStorage;
 import ru.yandex.practicum.filmorate.storage.rating.RatingStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,24 +21,23 @@ public class FilmService {
     private final GenreStorage genreStorage;
     private final RatingStorage ratingStorage;
     private final LikeStorage likeStorage;
+    private final UserStorage userStorage;
 
 
     public Set<Integer> addLike(int filmId, int userId) {
+        filmStorage.getFilmById(filmId);
+        userStorage.getUserById(userId);
         return likeStorage.addLike(filmId, userId);
     }
 
     public Set<Integer> deleteLike(int filmId, int userId) {
-
+        filmStorage.getFilmById(filmId);
+        userStorage.getUserById(userId);
         return likeStorage.deleteLike(filmId, userId);
     }
 
     public List<Film> popularFilms(Integer count) {
-        List<Film> films = filmStorage.getFilms();
-        return films.stream()
-                .sorted((f1, f2) -> Integer.compare(likeStorage.getFilmLikes(f2.getId()).size(),
-                        likeStorage.getFilmLikes(f1.getId()).size()))
-                .limit(count)
-                .collect(Collectors.toList());
+        return filmStorage.getPopularFilms(count);
     }
 
     public Film addFilm(Film film) {

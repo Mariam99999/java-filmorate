@@ -3,8 +3,6 @@ package ru.yandex.practicum.filmorate.storage.like;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,13 +11,10 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class LikeDbStorage implements LikeStorage {
     private final JdbcTemplate jdbcTemplate;
-    private final UserStorage userStorage;
-    private final FilmStorage filmStorage;
 
     @Override
     public Set<Integer> addLike(int filmId, int userId) {
-        filmStorage.getFilmById(filmId);
-        userStorage.getUserById(userId);
+
         String query = "INSERT INTO PUBLIC.FILM_LIKES (FILM_ID, USER_ID )" + "VALUES (?,?);";
         jdbcTemplate.update(query, filmId, userId);
         return getFilmLikes(filmId);
@@ -27,8 +22,7 @@ public class LikeDbStorage implements LikeStorage {
 
     @Override
     public Set<Integer> deleteLike(int filmId, int userId) {
-        filmStorage.getFilmById(filmId);
-        userStorage.getUserById(userId);
+
         String query = "DELETE from FILM_LIKES where FILM_ID = ? AND USER_ID = ?";
         jdbcTemplate.update(query, filmId, userId);
         return getFilmLikes(filmId);
