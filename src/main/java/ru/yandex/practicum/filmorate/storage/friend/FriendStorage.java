@@ -10,5 +10,6 @@ public interface FriendStorage {
     Set<User> getFriends(int userId);
 
     Set<Integer> deleteFriend(int userId, int friendId);
+
     Set<User> getGeneralFriends(int id, int otherId);
 }
